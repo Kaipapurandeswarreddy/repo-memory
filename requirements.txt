@@ -1,0 +1,6 @@
+# runtime (networkx required for parity; stdlib fallback works without it)
+networkx>=3.0
+# optional — git history mining falls back to `git` subprocess without it
+GitPython>=3.1; python_version >= "3.10"
+# dev
+pytest>=7

@@ -1,0 +1,29 @@
+name: repomemory
+
+on:
+  pull_request:
+  push:
+    branches: [main, master]
+
+jobs:
+  memory-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history: the miner needs git log
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install networkx
+      - run: pip install -e .
+      - name: Build per-file memory
+        run: repomem init . --max-commits 30
+      - name: Structural scan (cycles + blast radius)
+        run: repomem scan
+      - name: Check PR diff for regressions
+        if: github.event_name == 'pull_request'
+        run: |
+          git diff "origin/${{ github.base_ref }}...HEAD" > /tmp/pr.diff
+          repomem check /tmp/pr.diff
+          # exit 2 = high-severity finding -> fails the PR

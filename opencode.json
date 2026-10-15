@@ -1,0 +1,10 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "repomemory": {
+      "type": "local",
+      "command": ["C:/Users/puran/AppData/Local/Programs/Python/Python310/python.exe", "-m", "repomemory.mcp_server"],
+      "enabled": true
+    }
+  }
+}

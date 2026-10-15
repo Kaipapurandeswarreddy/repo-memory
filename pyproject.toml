@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "repomemory"
+version = "0.1.0"
+description = "History-aware per-file memory for code generation"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+  "networkx>=3.0",
+]
+
+[project.optional-dependencies]
+git = ["GitPython>=3.1"]
+dev = ["pytest>=7"]
+
+[project.scripts]
+repomem = "repomemory.cli:main"
+repomem-mcp = "repomemory.mcp_server:main"
+repomem-http = "repomemory.http_server:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

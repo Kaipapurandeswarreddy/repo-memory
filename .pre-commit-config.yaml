@@ -1,0 +1,9 @@
+repos:
+  - repo: local
+    hooks:
+      - id: repomemory-check
+        name: repomemory regression check
+        entry: bash -c 'git diff --cached > /tmp/staged.diff; repomem check /tmp/staged.diff'
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]

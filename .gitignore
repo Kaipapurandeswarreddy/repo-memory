@@ -1,0 +1,15 @@
+# RepoMemory — local build + memory state (never commit these)
+.repomemory/
+__pycache__/
+*.pyc
+*.pyo
+src/*.egg-info/
+src/repomemory.egg-info/
+.pytest_cache/
+.DS_Store
+
+# Local secrets / env (keys travel via environment, never files)
+.env
+.env.*
+*.key
+tokens.jsonl
