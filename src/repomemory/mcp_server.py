@@ -221,6 +221,8 @@ def serve(repo: Path) -> int:
             pass
 
     threading.Thread(target=_prime, daemon=True).start()
+    _debug_log(bound["repo"], {"event": "startup", "pid": os.getpid(),
+                               "cwd": os.getcwd(), "bound": str(bound["repo"])})
     for req in _iter_messages():
         if not isinstance(req, dict):
             continue
@@ -254,13 +256,28 @@ def serve(repo: Path) -> int:
                                   "capabilities": {"tools": {}, "roots": {}},
                                   "serverInfo": {"name": "repomemory", "version": "0.1.0"}})
             elif method == "tools/list":
+                import time as _t
+                _t0 = _t.perf_counter()
                 _respond(req_id, {"tools": [{"name": k, "description": v["description"],
                                              "inputSchema": v["inputSchema"]}
                                             for k, v in TOOLS.items()]})
+                _debug_log(bound["repo"], {
+                    "event": "tools/list", "latency_ms": round((_t.perf_counter() - _t0) * 1000, 1),
+                    "bound": str(bound["repo"]),
+                })
             elif method == "tools/call":
+                import time as _t
+                _t0 = _t.perf_counter()
                 _respond(req_id, call_tool(bound["repo"], params.get("name", ""),
                                            params.get("arguments", {}) or {}))
+                _debug_log(bound["repo"], {
+                    "event": "tools/call",
+                    "tool": params.get("name", "?"),
+                    "latency_ms": round((_t.perf_counter() - _t0) * 1000, 1),
+                    "bound": str(bound["repo"]),
+                })
             elif method in ("shutdown", "exit"):
+                _debug_log(bound["repo"], {"event": method, "bound": str(bound["repo"])})
                 _respond(req_id, "ok")
                 return 0
             elif method == "ping":
